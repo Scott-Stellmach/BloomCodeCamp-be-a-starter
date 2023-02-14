@@ -6,6 +6,7 @@ import com.hcc.exceptions.AssignmentNotFoundException;
 import com.hcc.repositories.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -14,47 +15,51 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/assignments")
 public class AssignmentController {
+
+    // TODO: Verify Authorization to get
+    // TODO: Utilize the AssignmentResponseDto
 
     @Autowired
     private AssignmentRepository assignmentRepository;
 
     // Get all Assignments by User /api/assignments
     @GetMapping("/api/assignments")
-    public List<Assignment> getAllAssignmentsByUser(User user) {
-        return assignmentRepository.findByUser(user);
+    ResponseEntity<?> getAllAssignmentsByUser() {
+        List<Assignment> assignments = assignmentRepository.findAll();
+        return ResponseEntity.ok(assignments);
     }
 
     // Get the Assignment by Id  /api/assignments/{id}
     @GetMapping("/api/assignments/{id}")
-    public Assignment getAssignmentById(@PathVariable Long id) {
-        Optional<Assignment> optional = assignmentRepository.findAssingmentById(id);
-        return optional.orElseThrow(
-                () -> new AssignmentNotFoundException( "Assignment with: " + id + " id was not found.")
+    ResponseEntity<?> getAssignmentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+
+        Optional<Assignment> optional = assignmentRepository.findAssignmentById(id);
+
+        return ResponseEntity.ok(optional.orElseThrow(
+                () -> new AssignmentNotFoundException( "Assignment with: " + id + " id was not found."))
         );
     }
 
     // (UPDATE) Put Assignment by Id  /api/assignments/{id}
     @PutMapping("/api/assignments/{id}")
-    public ResponseEntity<Object> updateAssignment
-        (@RequestBody Assignment assignment, @PathVariable Long id) {
+    ResponseEntity<Object> updateAssignment
+        (@RequestBody Assignment assignment, @PathVariable Long id, @AuthenticationPrincipal User user) {
 
-        Optional<Assignment> optional = assignmentRepository.findAssingmentById(id);
-
+        Optional<Assignment> optional = assignmentRepository.findAssignmentById(id);
         if (optional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         assignment.setId(id);
-
         assignmentRepository.save(assignment);
-
         return ResponseEntity.noContent().build();
     }
 
     // Post (NEW) Assignment /api/assignments
     @PostMapping("/api/assignments")
-    public ResponseEntity<Object> createAssignment(@RequestBody Assignment assignment) {
+    ResponseEntity<Object> createAssignment(@RequestBody Assignment assignment, @AuthenticationPrincipal User user) {
         Assignment savedAssignment  = assignmentRepository.save(assignment);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -65,8 +70,7 @@ public class AssignmentController {
 
     // DELETE an Assignment by Id  /api/assignments/{id}
     @DeleteMapping("api/assignments/{id}")
-    public void deleteAssignmentById(@PathVariable Long id) {
+    public void deleteAssignmentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
         assignmentRepository.deleteById(id);
     }
-
 }

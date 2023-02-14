@@ -37,12 +37,12 @@ public class JwtUtils {
     }
 
     //check if the token is expired...
-    public Date getExpiratioinDateFromToken(String token) {
+    public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims:: getExpiration);
     }
 
     public boolean isTokenExpired (String token) {
-        final Date expiration = getExpiratioinDateFromToken(token);
+        final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
@@ -51,11 +51,11 @@ public class JwtUtils {
         return doGenerateToken(user.getUsername());
     }
 
-    private String doGenerateToken(String subject) {
+    private String doGenerateToken(String subject) { //TODO: admin can be added here later
         Claims claims = Jwts.claims().setSubject(subject);
         claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("LEARNER_ROLE")
-                , new SimpleGrantedAuthority("CODE_REVIEWER_ROLE")
-                , new SimpleGrantedAuthority("ADMIN_ROLE")));
+                , new SimpleGrantedAuthority("CODE_REVIEWER_ROLE"))
+        );
 
         return Jwts.builder()
                 .setClaims(claims)
