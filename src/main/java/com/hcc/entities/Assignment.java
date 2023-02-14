@@ -68,6 +68,10 @@ public class Assignment {
 //        return codeReviewer;
 //    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setGithubUrl(String githubUrl) {
         this.githubUrl = githubUrl;
     }
