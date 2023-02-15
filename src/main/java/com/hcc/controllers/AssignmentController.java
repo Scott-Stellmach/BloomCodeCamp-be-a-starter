@@ -35,6 +35,14 @@ public class AssignmentController {
     @GetMapping("/api/assignments/{id}")
     ResponseEntity<?> getAssignmentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
+        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
+//        try {
+//
+//        } catch (Exception exception) {
+//
+//        }
+
+
         Optional<Assignment> optional = assignmentRepository.findAssignmentById(id);
 
         return ResponseEntity.ok(optional.orElseThrow(
@@ -46,6 +54,13 @@ public class AssignmentController {
     @PutMapping("/api/assignments/{id}")
     ResponseEntity<Object> updateAssignment
         (@RequestBody Assignment assignment, @PathVariable Long id, @AuthenticationPrincipal User user) {
+
+        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
+//        try {
+//
+//        } catch (Exception exception) {
+//
+//        }
 
         Optional<Assignment> optional = assignmentRepository.findAssignmentById(id);
         if (optional.isEmpty()) {
@@ -60,6 +75,15 @@ public class AssignmentController {
     // Post (NEW) Assignment /api/assignments
     @PostMapping("/api/assignments")
     ResponseEntity<Object> createAssignment(@RequestBody Assignment assignment, @AuthenticationPrincipal User user) {
+
+        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
+
+        //        try {
+//
+//        } catch (Exception exception) {
+//
+//        }
+
         Assignment savedAssignment  = assignmentRepository.save(assignment);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -70,7 +94,16 @@ public class AssignmentController {
 
     // DELETE an Assignment by Id  /api/assignments/{id}
     @DeleteMapping("api/assignments/{id}")
+
+
     public void deleteAssignmentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
+
+        //        try {
+//
+//        } catch (Exception exception) {
+//
+//        }
         assignmentRepository.deleteById(id);
     }
 }

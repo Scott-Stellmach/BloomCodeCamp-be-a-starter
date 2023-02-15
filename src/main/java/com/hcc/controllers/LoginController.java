@@ -1,5 +1,6 @@
 package com.hcc.controllers;
 
+import com.hcc.dtos.AuthCredentialRequest;
 import com.hcc.entities.User;
 import com.hcc.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,13 @@ public class LoginController {
 
     // handles login  /api/auth/login
     @PostMapping("/api/auth/login")
-    ResponseEntity<?> login(@RequestBody String username, @RequestBody String password) throws Exception {
+    ResponseEntity<?> login(@RequestBody AuthCredentialRequest authCredentialRequest) throws Exception {
         Authentication authObject;
 
         try {
             authObject = authenticationManager.authenticate(new
-                    UsernamePasswordAuthenticationToken(username, password));
+                    UsernamePasswordAuthenticationToken(
+                            authCredentialRequest.getUsername(), authCredentialRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authObject);
             User user = (User) authObject.getPrincipal();
             // set password to null so that we keep confidential information safe in our tokens

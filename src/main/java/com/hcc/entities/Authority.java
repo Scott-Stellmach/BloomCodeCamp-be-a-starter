@@ -17,8 +17,9 @@ public class Authority implements GrantedAuthority {
     @ManyToOne
     private User user;
 
-    public Authority(String authority) {
+    public Authority(String authority, User user) {
         this.authority = authority;
+        this.user = user;
     }
 
     public Authority() {

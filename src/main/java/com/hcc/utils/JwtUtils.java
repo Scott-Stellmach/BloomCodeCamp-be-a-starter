@@ -51,7 +51,8 @@ public class JwtUtils {
         return doGenerateToken(user.getUsername());
     }
 
-    private String doGenerateToken(String subject) { //TODO: admin can be added here later
+    //TODO: admin can be added here later, possibly need to make if statements here checking what claims should be given based on role
+    private String doGenerateToken(String subject) {
         Claims claims = Jwts.claims().setSubject(subject);
         claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("LEARNER_ROLE")
                 , new SimpleGrantedAuthority("CODE_REVIEWER_ROLE"))

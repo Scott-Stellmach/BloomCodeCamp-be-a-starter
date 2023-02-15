@@ -1,5 +1,6 @@
 package com.hcc.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,14 +22,15 @@ public class User implements UserDetails {
     private String username;
     @Column(name = "password")
     private String password;
-//    @Column(name = "List_of_Authorities")
-//    private List<Authority> authorities;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonIgnore
+    private List<Authority> authorities;
 
-    public User(Date cohortStartDate, String username, String password) { // List<Authority> authorities
+    public User(Date cohortStartDate, String username, String password, List<Authority> authorities) {
         this.cohortStartDate = cohortStartDate;
         this.username = username;
         this.password = password;
-//        this.authorities = authorities;
+        this.authorities = authorities;
     }
 
     public User() {}
@@ -68,7 +70,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new Authority("ROLE_LEARNER"));
+        roles.add(new Authority("ROLE_LEARNER", this));
         return roles;
     }
 
@@ -76,9 +78,10 @@ public class User implements UserDetails {
         return password;
     }
 
-//    public List<Authority> getAuthorities() {
-//        return authorities;
-//    }
+    public List<Authority> getCurrentAuthorities() {
+        if (this.authorities.isEmpty()) {return new ArrayList<>();}
+        return List.copyOf(this.authorities);
+    }
 
     public void setCohortStartDate(Date cohortStartDate) {
         this.cohortStartDate = cohortStartDate;
@@ -92,7 +95,9 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    // TODO:  Figure out where this will go, ADMIN_ROLE auth
 //    public void setAuthorities(List<Authority> authorities) {
 //        this.authorities = authorities;
 //    }
+
 }
