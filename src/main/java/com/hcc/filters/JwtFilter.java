@@ -37,6 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (isEmpty(header) || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            return;
         }
 
         // get jwt token
@@ -48,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (!jwtUtils.validateToken(token, userDetails)) {
             filterChain.doFilter(request, response);
+            return;
         }
 
         // create auth

@@ -10,13 +10,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/auth")
 public class LoginController {
 
@@ -27,7 +26,7 @@ public class LoginController {
     private AuthenticationManager authenticationManager;
 
     // handles login  /api/auth/login
-    @PostMapping("/api/auth/login")
+    @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody AuthCredentialRequest authCredentialRequest) throws Exception {
         Authentication authObject;
 
@@ -53,14 +52,17 @@ public class LoginController {
     }
 
     // validates tokens  /api/auth/validate
+    @GetMapping("/validate")
+    ResponseEntity<?> validate(@RequestParam String token, @AuthenticationPrincipal User user) {
 
-    // take in a token
+        boolean isValid;
+        // check if the user is null and validate token
+        if (user != null) {
+            isValid = jwtUtils.validateToken(token, user);
+        } else {
+            return ResponseEntity.ok(false);
+        }
 
-    // check if the user is null
-
-    // validate the token
-
-    // return a response w/ true or false
-    //  if exception, return false w/ exception
-
+       return ResponseEntity.ok(isValid);
+    }
 }

@@ -25,4 +25,5 @@ public enum AssignmentStatusEnum {
     public String getAssignmentStatusMessage() {
         return assignmentStatusMessage;
     }
+
 }

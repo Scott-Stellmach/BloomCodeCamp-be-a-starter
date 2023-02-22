@@ -6,27 +6,25 @@ import com.hcc.enums.AssignmentStatusEnum;
 
 public class AssignmentResponceDto {
 
-    private final Assignment assignmentDetails;
+    private final Assignment assignment;
 
-    private final AssignmentStatusEnum status;
+    private final AssignmentStatusEnum[] statusEnums = AssignmentStatusEnum.values();
 
-    private final AssignmentEnum assignment;
+    private AssignmentEnum[] assignmentEnums = AssignmentEnum.values();
 
-    public AssignmentResponceDto(Assignment assignmentDetails, AssignmentStatusEnum status, AssignmentEnum assignment) {
-        this.assignmentDetails = assignmentDetails;
-        this.status = status;
+    public AssignmentResponceDto(Assignment assignment) {
         this.assignment = assignment;
     }
 
-    public Assignment getAssignmentDetails() {
-        return assignmentDetails;
-    }
-
-    public AssignmentStatusEnum getStatus() {
-        return status;
-    }
-
-    public AssignmentEnum getAssignment() {
+    public Assignment getAssignment() {
         return assignment;
+    }
+
+    public AssignmentStatusEnum[] getStatusEnums() {
+        return statusEnums;
+    }
+
+    public AssignmentEnum[] getAssignmentEnums() {
+        return assignmentEnums;
     }
 }

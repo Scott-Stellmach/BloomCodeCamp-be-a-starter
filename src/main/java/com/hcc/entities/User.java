@@ -5,7 +5,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -26,11 +25,10 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Authority> authorities;
 
-    public User(Date cohortStartDate, String username, String password, List<Authority> authorities) {
+    public User(Date cohortStartDate, String username, String password) {
         this.cohortStartDate = cohortStartDate;
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
     }
 
     public User() {}
@@ -69,18 +67,13 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new Authority("ROLE_LEARNER", this));
-        return roles;
+//        List<GrantedAuthority> roles = new ArrayList<>();
+//        roles.add(new Authority("ROLE_LEARNER", this));
+        return authorities;
     }
 
     public String getPassword() {
         return password;
-    }
-
-    public List<Authority> getCurrentAuthorities() {
-        if (this.authorities.isEmpty()) {return new ArrayList<>();}
-        return List.copyOf(this.authorities);
     }
 
     public void setCohortStartDate(Date cohortStartDate) {
@@ -96,8 +89,8 @@ public class User implements UserDetails {
     }
 
     // TODO:  Figure out where this will go, ADMIN_ROLE auth
-//    public void setAuthorities(List<Authority> authorities) {
-//        this.authorities = authorities;
-//    }
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
 
 }

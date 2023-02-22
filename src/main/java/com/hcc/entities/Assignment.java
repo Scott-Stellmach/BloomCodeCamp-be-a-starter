@@ -20,17 +20,17 @@ public class Assignment {
     private String reviewVideoUrl;
     @ManyToOne
     private User user;
-//    @Column(name = "code_reviewer")
-//    private User codeReviewer;
+    @ManyToOne()
+    private User codeReviewer;
 
-    public Assignment(String status, int number, String githubUrl,String branch, String reviewVideoUrl, User user) { //User codeReviewer
+    public Assignment(String status, int number, String githubUrl,String branch, String reviewVideoUrl, User user, User codeReviewer) {
         this.status = status;
-        this.number = number; //TODO: need to make this auto increment each time a new assignment is created
+        this.number = number;
         this.githubUrl = githubUrl;
         this.branch = branch;
         this.reviewVideoUrl = reviewVideoUrl;
         this.user = user;
-//        this.codeReviewer = codeReviewer;
+        this.codeReviewer = codeReviewer;
     }
 
     public Assignment() {
@@ -64,9 +64,9 @@ public class Assignment {
         return user;
     }
 
-//    public User getCodeReviewer() {
-//        return codeReviewer;
-//    }
+    public User getCodeReviewer() {
+        return codeReviewer;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -88,9 +88,9 @@ public class Assignment {
         this.user = user;
     }
 
-//    public void setCodeReviewer(User codeReviewer) {
-//        this.codeReviewer = codeReviewer;
-//    }
+    public void setCodeReviewer(User codeReviewer) {
+        this.codeReviewer = codeReviewer;
+    }
 
     public void setStatus(String status) {
         this.status = status;

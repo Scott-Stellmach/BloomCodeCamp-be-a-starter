@@ -2,8 +2,7 @@ package com.hcc.controllers;
 
 import com.hcc.entities.Assignment;
 import com.hcc.entities.User;
-import com.hcc.exceptions.AssignmentNotFoundException;
-import com.hcc.repositories.AssignmentRepository;
+import com.hcc.services.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/assignments")
@@ -21,70 +19,50 @@ public class AssignmentController {
     // TODO: Verify Authorization to get
     // TODO: Utilize the AssignmentResponseDto
 
+    // TODO: Route all actions through the AssignmentService class, to the repo
+
     @Autowired
-    private AssignmentRepository assignmentRepository;
+    private AssignmentService assignmentService;
 
     // Get all Assignments by User /api/assignments
-    @GetMapping("/api/assignments")
-    ResponseEntity<?> getAllAssignmentsByUser() {
-        List<Assignment> assignments = assignmentRepository.findAll();
+    @GetMapping
+    ResponseEntity<?> getAllAssignmentsByUser(@AuthenticationPrincipal User user) {
+
+        Set<Assignment> assignments = assignmentService.findAssignmentsByUser(user);
+
         return ResponseEntity.ok(assignments);
     }
 
+
     // Get the Assignment by Id  /api/assignments/{id}
-    @GetMapping("/api/assignments/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<?> getAssignmentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
-        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
-//        try {
-//
-//        } catch (Exception exception) {
-//
-//        }
+       Assignment assignment = assignmentService.findAssignmentsById(id);
 
-
-        Optional<Assignment> optional = assignmentRepository.findAssignmentById(id);
-
-        return ResponseEntity.ok(optional.orElseThrow(
-                () -> new AssignmentNotFoundException( "Assignment with: " + id + " id was not found."))
-        );
+       return ResponseEntity.ok(assignment);
     }
 
     // (UPDATE) Put Assignment by Id  /api/assignments/{id}
-    @PutMapping("/api/assignments/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<Object> updateAssignment
         (@RequestBody Assignment assignment, @PathVariable Long id, @AuthenticationPrincipal User user) {
 
-        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
-//        try {
-//
-//        } catch (Exception exception) {
-//
-//        }
-
-        Optional<Assignment> optional = assignmentRepository.findAssignmentById(id);
-        if (optional.isEmpty()) {
+        Assignment assignments= assignmentService.findAssignmentsById(id);
+        if (assignments == null) {
             return ResponseEntity.notFound().build();
         }
 
         assignment.setId(id);
-        assignmentRepository.save(assignment);
+        assignmentService.saveAssignment(assignment);
         return ResponseEntity.noContent().build();
     }
 
     // Post (NEW) Assignment /api/assignments
-    @PostMapping("/api/assignments")
+    @PostMapping
     ResponseEntity<Object> createAssignment(@RequestBody Assignment assignment, @AuthenticationPrincipal User user) {
 
-        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
-
-        //        try {
-//
-//        } catch (Exception exception) {
-//
-//        }
-
-        Assignment savedAssignment  = assignmentRepository.save(assignment);
+        Assignment savedAssignment  = assignmentService.saveAssignment(assignment);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(savedAssignment.getId()).toUri();
@@ -93,17 +71,8 @@ public class AssignmentController {
     }
 
     // DELETE an Assignment by Id  /api/assignments/{id}
-    @DeleteMapping("api/assignments/{id}")
-
-
+    @DeleteMapping("/{id}")
     public void deleteAssignmentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        // TODO: Authorize the user, if they have authority, complete action, otherwise throw AuthorizationException.
-
-        //        try {
-//
-//        } catch (Exception exception) {
-//
-//        }
-        assignmentRepository.deleteById(id);
+        assignmentService.deleteAssignmentById(id);
     }
 }
