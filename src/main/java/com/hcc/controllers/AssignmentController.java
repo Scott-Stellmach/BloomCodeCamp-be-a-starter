@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Set;
 
 @RestController
@@ -45,7 +43,7 @@ public class AssignmentController {
 
     // (UPDATE) Put Assignment by Id  /api/assignments/{id}
     @PutMapping("/{id}")
-    ResponseEntity<Object> updateAssignment
+    ResponseEntity<?> updateAssignment
         (@RequestBody Assignment assignment, @PathVariable Long id, @AuthenticationPrincipal User user) {
 
         Assignment assignments= assignmentService.findAssignmentsById(id);
@@ -54,20 +52,15 @@ public class AssignmentController {
         }
 
         assignment.setId(id);
-        assignmentService.saveAssignment(assignment);
-        return ResponseEntity.noContent().build();
+        assignmentService.saveUpdatedAssignment(assignment);
+        return ResponseEntity.ok(assignment);
     }
 
     // Post (NEW) Assignment /api/assignments
     @PostMapping
-    ResponseEntity<Object> createAssignment(@RequestBody Assignment assignment, @AuthenticationPrincipal User user) {
-
-        Assignment savedAssignment  = assignmentService.saveAssignment(assignment);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedAssignment.getId()).toUri();
-
-        return ResponseEntity.created(location).build();
+    ResponseEntity<?> createAssignment(@AuthenticationPrincipal User user) {
+        Assignment assignment = assignmentService.saveAssignment(user);
+        return ResponseEntity.ok(assignment);
     }
 
     // DELETE an Assignment by Id  /api/assignments/{id}

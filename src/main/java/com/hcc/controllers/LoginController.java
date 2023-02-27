@@ -18,16 +18,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @RequestMapping("/api/auth")
 public class LoginController {
-
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtils jwtUtils;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     // handles login  /api/auth/login
     @PostMapping("/login")
-    ResponseEntity<?> login(@RequestBody AuthCredentialRequest authCredentialRequest) throws Exception {
+    public ResponseEntity<?> login(@RequestBody AuthCredentialRequest authCredentialRequest) throws Exception {
         Authentication authObject;
 
         try {
@@ -44,7 +42,7 @@ public class LoginController {
             //  jwt token in the header, and the user in the response body
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, token)
-                    .body(user);
+                    .body(user.getUsername());
 
         }catch (BadCredentialsException exception){
             throw new Exception("Credentials Invalid");

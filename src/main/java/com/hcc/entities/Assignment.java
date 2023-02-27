@@ -11,7 +11,7 @@ public class Assignment {
     @Column(name = "current_status")
     private String status;
     @Column(name = "assignment_number")
-    private int number;
+    private Integer number;
     @Column(name = "github_url")
     private String githubUrl;
     @Column(name = "branch")
@@ -23,7 +23,7 @@ public class Assignment {
     @ManyToOne()
     private User codeReviewer;
 
-    public Assignment(String status, int number, String githubUrl,String branch, String reviewVideoUrl, User user, User codeReviewer) {
+    public Assignment(String status, Integer number, String githubUrl,String branch, String reviewVideoUrl, User user, User codeReviewer) {
         this.status = status;
         this.number = number;
         this.githubUrl = githubUrl;
@@ -44,7 +44,7 @@ public class Assignment {
         return status;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
@@ -94,5 +94,9 @@ public class Assignment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 }
